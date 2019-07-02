@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Example</title>
+  <link rel="canonical" href="http://example.com/">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/css/bootstrap-grid.min.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div class="container">
+  <div class="row">
+    <div class="col">
+      <div id="target"></div>
+    </div>
+    <div class="col">
+
+    </div>
+  </div>
+</div>
+<div id="target2"></div>
+
+<script src="../build/d3-progress-steps.min.js"></script>
+
+<script>
+  const foo = stepsProgress({
+    target: '#target'
+  })
+  const bar = stepsProgress({
+    target: '#target2'
+  })
+  console.log(foo, bar)
+
+</script>
+
+
+</body>
+</html>

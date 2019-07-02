@@ -1,0 +1,25 @@
+{
+  "name": "d3-progress-steps",
+  "version": "1.0.0",
+  "description": "getting the d3 dong out for progress steps",
+  "main": "index.js",
+  "author": "ross matheson",
+  "license": "none",
+  "dependencies": {
+    "babel-core": "^6.26.3",
+    "babel-loader": "7",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-es2015": "^6.24.1",
+    "clean-webpack-plugin": "^3.0.0",
+    "d3": "^5.9.7",
+    "lodash": "^4.17.11",
+    "uglifyjs-webpack-plugin": "^2.1.3",
+    "webpack": "^4.35.2"
+  },
+  "scripts": {
+    "dev": "webpack --watch"
+  },
+  "devDependencies": {
+    "webpack-cli": "^3.3.5"
+  }
+}
