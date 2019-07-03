@@ -5,30 +5,192 @@
   <title>Example</title>
   <link rel="canonical" href="http://example.com/">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/css/bootstrap-grid.min.css" rel="stylesheet" type="text/css" />
+  <style>
+    .step-active {
+      /*
+      transition: stroke-dasharray 850ms ease-in-out;
+      stroke-dasharray: 0 1000;
+      stroke-dashoffset: 0;
+      visibility: hidden;
+      */
+    }
+  </style>
 </head>
 <body>
 <div class="container">
-  <div class="row">
-    <div class="col">
-      <div id="target"></div>
-    </div>
-    <div class="col">
-
-    </div>
-  </div>
+  <div id="target"></div>
 </div>
+<div style="text-align: center">
+  <div id="sliderValue">0</div>
+  <input type="range" style="width: 100%;" step="0.1" value="0" max="8" min="0" id="changeSteps">
+</div>
+
+
 <div id="target2"></div>
+
+<div id="target3"></div>
+
+<div id="target4"></div>
+
+<div id="target5"></div>
+
+<div style="background: #f5dcee; border-top: 30px solid #f55a6d; #f55a6d;">
+  <div id="target6"></div>
+</div>
+
 
 <script src="../build/d3-progress-steps.min.js"></script>
 
 <script>
   const foo = stepsProgress({
-    target: '#target'
+    target: document.getElementById('target'),
+    currentStep: 1,
+    steps: [
+      {
+        name: 'foo',
+      },
+      {
+        name: 'bar'
+      },
+      {
+        name: 'baz'
+      },
+      {
+        name: ['boo', 'arse']
+      }
+    ]
   })
+
   const bar = stepsProgress({
-    target: '#target2'
+    target: document.getElementById('target2'),
+    currentStep: 0,
+    currentStepCompleted: 0.2,
+    steps: [
+      {
+        name: 'poop',
+      },
+      {
+        name: 'wee'
+      }
+    ]
   })
-  console.log(foo, bar)
+
+  const steps = [
+    {
+      name: '1',
+    },
+    {
+      name: '2'
+    },
+    {
+      name: '3'
+    },
+    {
+      name: '4'
+    },
+    {
+      name: '5',
+    },
+    {
+      name: '6'
+    },
+    {
+      name: '7'
+    },
+    {
+      name: '8'
+    }
+  ]
+
+  const baz = stepsProgress({
+    target: document.getElementById('target3'),
+    circleRadius: 30,
+    textSizeRatio: 1.3,
+    textYPosition: 57,
+    colorFg: '#48f583',
+    colorBg: '#f5ac97',
+    currentStep: 1,
+    steps: steps
+  })
+
+  const bazzzz = stepsProgress({
+    target: document.getElementById('target4'),
+    circleRadius: 60,
+    textSizeRatio: 1.3,
+    textYPosition: 65,
+    animationSpeed: 1000,
+    colorFg: '#f5f36b',
+    colorBg: '#f5c4ee',
+    currentStep: 5,
+    steps: steps
+  })
+
+  const bazzzzing = stepsProgress({
+    target: document.getElementById('target5'),
+    circleRadius: 10,
+    svgHeightRatio: 6,
+    textSizeRatio: 2,
+    textYPosition: 90,
+    animationSpeed: 1000,
+    strokeWidth: 7,
+    colorFg: '#22f5c9',
+    colorBg: '#f5c4ee',
+    currentStep: 5,
+    steps: steps
+  })
+
+  const bazzzzingTon = stepsProgress({
+    target: document.getElementById('target6'),
+    circleRadius: 120,
+    svgHeightRatio: 0.3,
+    textSizeRatio: 0.9,
+    textYPosition: 70,
+    animationSpeed: 1000,
+    textXoffset: -0.09,
+    strokeWidth: 30,
+    colorFg: '#f55a6d',
+    colorBg: '#dbc2d4',
+    backgroundColor: '#f5dcee',
+    textFill: '#d1b8ca',
+    currentStep: 5,
+    steps: steps
+  })
+
+
+  var updater = document.getElementById('changeSteps')
+  var updaterValue = document.getElementById('sliderValue')
+  updater.addEventListener('change' , function (e) {
+    var n = e.target.value.toString().split('.')
+    var fraction = n[1] ? n[1] / 10 : 0
+    updaterValue.innerHTML = `step ${n[0]} upto ${fraction}`
+    bazzzz.updateProgress({
+      currentStep: +n[0],
+      currentStepCompleted: +fraction
+    })
+    bazzzzing.updateProgress({
+      currentStep: +n[0],
+      currentStepCompleted: +fraction
+    })
+    baz.updateProgress({
+      currentStep: +n[0],
+      currentStepCompleted: +fraction
+    })
+    bazzzz.updateProgress({
+      currentStep: +n[0],
+      currentStepCompleted: +fraction
+    })
+    bazzzz.updateProgress({
+      currentStep: +n[0],
+      currentStepCompleted: +fraction
+    })
+    bazzzzingTon.updateProgress({
+      currentStep: +n[0],
+      currentStepCompleted: +fraction
+    })
+  })
+
+
+  console.log(foo)
 
 </script>
 
