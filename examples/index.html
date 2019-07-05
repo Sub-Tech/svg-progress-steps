@@ -4,6 +4,7 @@
   <meta charset="utf-8">
   <title>Example</title>
   <link rel="canonical" href="http://example.com/">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/css/bootstrap-grid.min.css" rel="stylesheet" type="text/css" />
   <style>
     .step-active {
@@ -39,12 +40,13 @@
 </div>
 
 
-<script src="../build/d3-progress-steps.min.js"></script>
+<script src="../build/svg-progress-steps.min.js"></script>
 
 <script>
   const foo = stepsProgress({
     target: document.getElementById('target'),
-    currentStep: 1,
+    currentStep: 3,
+    animationSpeed: 2000,
     steps: [
       {
         name: 'foo',
@@ -63,21 +65,21 @@
 
   const bar = stepsProgress({
     target: document.getElementById('target2'),
+    circleRadius: 120,
+    strokeWidth: 20,
     currentStep: 0,
     currentStepCompleted: 0.2,
+    fontSize: 40,
     steps: [
       {
-        name: 'poop',
-      },
-      {
-        name: 'wee'
+        name: ['signup', 'progress'],
       }
     ]
   })
 
   const steps = [
     {
-      name: '1',
+      name: '✌',
     },
     {
       name: '2'
@@ -107,9 +109,10 @@
     circleRadius: 30,
     textSizeRatio: 1.3,
     textYPosition: 57,
+    animationSpeed: 1000,
     colorFg: '#48f583',
     colorBg: '#f5ac97',
-    currentStep: 1,
+    currentStep: 7,
     steps: steps
   })
 
@@ -127,12 +130,15 @@
 
   const bazzzzing = stepsProgress({
     target: document.getElementById('target5'),
-    circleRadius: 10,
-    svgHeightRatio: 6,
-    textSizeRatio: 2,
-    textYPosition: 90,
-    animationSpeed: 1000,
-    strokeWidth: 7,
+    circleRadius: 50,
+    completeFill: '#dcffe2',
+    textFill: '#f5c4ee',
+    completeTextFill: '#22c99d',
+    activeTextFill: '#22c99d',
+    // svgHeightRatio: 6,
+    // textYPosition: 90,
+    animationSpeed: 2000,
+    strokeWidth: 5,
     colorFg: '#22f5c9',
     colorBg: '#f5c4ee',
     currentStep: 5,
@@ -141,19 +147,17 @@
 
   const bazzzzingTon = stepsProgress({
     target: document.getElementById('target6'),
-    circleRadius: 120,
+    circleRadius: 100,
     svgHeightRatio: 0.3,
-    textSizeRatio: 0.9,
-    textYPosition: 70,
     animationSpeed: 1000,
-    textXoffset: -0.09,
+    fontSize: 100,
     strokeWidth: 30,
     colorFg: '#f55a6d',
     colorBg: '#dbc2d4',
     backgroundColor: '#f5dcee',
     textFill: '#d1b8ca',
     currentStep: 5,
-    steps: steps
+    steps: steps.concat(steps)
   })
 
 

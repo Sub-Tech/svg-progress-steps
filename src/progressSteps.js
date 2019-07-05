@@ -6,10 +6,10 @@ const stepsInit = {
   renderSvg () {
     this.svgNode = document.createElementNS("http://www.w3.org/2000/svg", "svg")
     // viewBox="0 0 766 166" version="1.1" xmlns="http://www.w3.org/2000/svg"
-    this.svgNode.setAttribute('viewBox', '0 0 766 166')
+    this.svgNode.setAttribute('viewBox', `0 0 ${this.circleRadius * 2 * this.steps.length * 2} ${((this.circleRadius * 2) + this.strokeWidth) * this.svgHeightRatio}`)
     this.svgNode.setAttribute('version', '1.1')
     // this.svgNode.setAttributeNS("http://www.w3.org/2000/svg", 'xmlns', 'http://www.w3.org/2000/svg')
-    this.svgNode.setAttribute('height', (this.circleRadius * 2.1 * this.svgHeightRatio).toString())
+    this.svgNode.setAttribute('height', `${this.circleRadius}`)  // viewBox will handle it
     this.svgNode.setAttribute('width', '100%')
     this.target.appendChild(this.svgNode)
   },
@@ -38,6 +38,18 @@ const stepsInit = {
     lineFg.setAttribute('stroke-dasharray', '0 10000')
     lineFg.setAttribute('stroke-dashoffset', '0')
 
+    const lineTest = document.createElementNS("http://www.w3.org/2000/svg", 'line')
+    lineTest.setAttribute('x1', '0%')
+    lineTest.setAttribute('x2', '0%')
+    lineTest.setAttribute('y1', '0%')
+    lineTest.setAttribute('y2', '100%')
+    lineTest.setAttribute('class', 'line-test')
+    lineTest.setAttribute('stroke', this.colorFg)
+    lineTest.setAttribute('stroke-width', `${this.strokeWidth}px`)
+    lineTest.setAttribute('stroke-dasharray', '0 10000')
+    lineTest.setAttribute('stroke-dashoffset', '0')
+
+    this.svgNode.appendChild(lineTest)
     this.svgNode.appendChild(lineBg)
     this.svgNode.appendChild(lineFg)
   },
@@ -45,13 +57,22 @@ const stepsInit = {
     this.steps.map((d, i) => {
       const cx = ((( i + 0.5 ) / this.steps.length) * 100).toString() + '%'
 
+      const circleNodeFgBg = document.createElementNS("http://www.w3.org/2000/svg", 'circle')
+      circleNodeFgBg.setAttribute('cx', cx)
+      circleNodeFgBg.setAttribute('cy', '50%')
+      circleNodeFgBg.setAttribute('r', this.circleRadius.toString())
+      circleNodeFgBg.setAttribute('stroke-width', `${this.strokeWidth}`)
+      circleNodeFgBg.setAttribute('fill', this.backgroundColor)
+      circleNodeFgBg.setAttribute('class', 'step-foreground-fill')
+      this.svgNode.appendChild(circleNodeFgBg)
+
       const circleNode = document.createElementNS("http://www.w3.org/2000/svg", 'circle')
       circleNode.setAttribute('cx', cx)
       circleNode.setAttribute('cy', '50%')
       circleNode.setAttribute('r', this.circleRadius.toString())
       circleNode.setAttribute('stroke', this.colorBg)
-      circleNode.setAttribute('stroke-width', `${this.strokeWidth}px`)
-      circleNode.setAttribute('fill', this.backgroundColor)
+      circleNode.setAttribute('stroke-width', `${this.strokeWidth}`)
+      circleNode.setAttribute('fill', 'none')
       circleNode.setAttribute('class', 'step-background')
       this.svgNode.appendChild(circleNode)
 
@@ -60,7 +81,7 @@ const stepsInit = {
       circleNodeFg.setAttribute('cy', '50%')
       circleNodeFg.setAttribute('r', this.circleRadius.toString())
       circleNodeFg.setAttribute('stroke', this.colorFg)
-      circleNodeFg.setAttribute('stroke-width', `${this.strokeWidth}px`)
+      circleNodeFg.setAttribute('stroke-width', `${this.strokeWidth}`)
       circleNodeFg.setAttribute('fill', 'none')
       circleNodeFg.setAttribute('class', 'step-foreground')
       circleNodeFg.setAttribute('stroke-dasharray', '0 10000')
@@ -73,32 +94,43 @@ const stepsInit = {
     this.steps.map((d, i) => {
       const cx = (((( i + 0.5 ) / this.steps.length) + this.textXoffset) * 100).toString() + '%'
       if (d.name) {
+        // line test to get height of svg after viewbox
+        const testLine = this.target.querySelector('.line-test')
+        const testLength = testLine.getTotalLength();
+
+        const textNode = document.createElementNS("http://www.w3.org/2000/svg",'text')
+        textNode.setAttribute('x',cx)
+        textNode.setAttribute('y', (testLength / 2).toString())
+        textNode.setAttribute("alignment-baseline", "central")
+        textNode.setAttribute('text-anchor','middle')
+        textNode.setAttribute('class','step-text')
+        textNode.setAttribute('fill', this.textFill)
+        textNode.setAttribute('font-size',`${this.fontSize}`)
+
         if (d.name.constructor === Array) {
-          // map over the tspans for multilines
-          /*
-           <text x="83" y="55%" class="instruction-text" text-anchor="middle">
-           <!--tspan x="83" dy="1.2em">Product</tspan>
-           <tspan x="83" dy="1.2em">Chosen</tspan-->
-           Product
-           </text>
-           */
+          const allTextSize = d.name.length * this.fontSize
+          const gapTop = (testLength - allTextSize + this.fontSize) / 2
+
+          d.name.map((t, i) => {
+            const y = gapTop + (i * this.fontSize)
+
+            const tspan = document.createElementNS("http://www.w3.org/2000/svg", 'tspan')
+            tspan.setAttribute('x',cx)
+            tspan.setAttribute("alignment-baseline", "central")
+            tspan.setAttribute('y', y)
+            const spanContent = document.createTextNode(t)
+            tspan.appendChild(spanContent)
+            textNode.appendChild(tspan)
+          })
         } else {
-          const textNode = document.createElementNS("http://www.w3.org/2000/svg",'text')
-          textNode.setAttribute('x',cx)
-          textNode.setAttribute('y',`${this.textYPosition}%`)
-          textNode.setAttribute('r',this.circleRadius.toString())
-          textNode.setAttribute('text-anchor','middle')
-          textNode.setAttribute('class','step-text')
-          textNode.setAttribute('fill', this.textFill)
-          textNode.setAttribute('font-size',`${this.circleRadius * this.textSizeRatio}`)
           const text = document.createTextNode(d.name)
           textNode.appendChild(text)
-          this.svgNode.appendChild(textNode)
         }
+        this.svgNode.appendChild(textNode)
       }
     })
   },
-  animate () {
+  animate (callback) {
     const stepSpeed =  this.animationSpeed / this.steps.length
     const lineSpeed = this.animationSpeed - stepSpeed
 
@@ -140,6 +172,46 @@ const stepsInit = {
         completeStepNode.style.strokeDasharray = length + ", " + length
       }
     }
+
+    this.steps.map((s, i) => {
+      const completeStepNode = this.target.querySelectorAll('.step-foreground-fill')[i]
+      if (this.completeFill) {
+        if (i < this.currentStep) {
+          console.log('happening', i)
+          completeStepNode.style.transition = `fill ${stepSpeed * (i+1)}ms ease`
+          completeStepNode.style.transitionDelay = `${stepSpeed * i + stepSpeed}ms`
+          completeStepNode.style.fill = this.completeFill
+        } else {
+          console.log('hello face', i)
+          completeStepNode.style.fill = this.backgroundColor
+        }
+      }
+
+      if (this.completeTextFill) {
+        const completeStepTextNode = this.target.querySelectorAll('.step-text')[i]
+        if (i < this.currentStep) {
+          completeStepTextNode.style.transition = `fill ${stepSpeed * (i+1) + 50}ms ease`
+          completeStepTextNode.style.transitionDelay = `${stepSpeed * i * 0.5}ms`
+          completeStepTextNode.style.fill = this.completeTextFill
+        } else {
+          console.log('hello face', i)
+          completeStepTextNode.style.fill = this.textFill
+        }
+      }
+
+      if (this.activeTextFill) {
+        const completeStepTextNode = this.target.querySelectorAll('.step-text')[i]
+        if (i === this.currentStep) {
+          completeStepTextNode.style.transition = `fill ${stepSpeed * (i+1) + 50}ms ease`
+          completeStepTextNode.style.transitionDelay = `${stepSpeed * i * 0.5}ms`
+          completeStepTextNode.style.fill = this.activeTextFill
+        }
+      }
+    })
+
+    if (callback && callback.constructor === 'function') {
+      callback(this.target.querySelectorAll('.step-text')[this.currentStep])
+    }
   },
   setNumber (val, def) {
       return isNaN(val) ? def : val
@@ -159,16 +231,20 @@ const stepsInit = {
     this.colorBg = this.setString(conf.colorBg, '#cccccc')
     this.colorFg = this.setString(conf.colorFg, 'limeGreen')
     this.strokeWidth = this.setNumber(conf.strokeWidth, 12)
-    this.textYPosition = this.setNumber(conf.textYPosition, 57)
+    this.textYPosition = this.setNumber(conf.textYPosition, 50)
     this.textXoffset = this.setNumber(conf.textXoffset, 0)
     this.svgHeightRatio = this.setNumber(conf.svgHeightRatio, 1)
     this.textFill = this.setString(conf.textFill, 'black')
+    this.fontSize = this.setNumber(conf.fontSize, 40)
+    this.completeFill = this.setString(conf.completeFill, '')
+    this.completeTextFill = this.setString(conf.completeTextFill, '')
+    this.activeTextFill = this.setString(conf.activeTextFill, '')
   },
-  updateProgress (conf) {
+  updateProgress (conf, fn) {
     this.currentStep = this.setNumber(conf.currentStep, this.currentStep)
     this.currentStepCompleted = this.setNumber(conf.currentStepCompleted, this.currentStepCompleted)
     this.animationSpeed = this.setNumber(conf.animationSpeed, this.animationSpeed)
-    this.animate()
+    this.animate(fn)
   },
   init (conf) {
     if (! conf.target) return
@@ -185,31 +261,7 @@ const stepsInit = {
 
 
 export default conf => {
-  console.log('this is the conf initialized dog shit face', conf)
   const boob = Object.create(stepsInit)
-  /*
-   [
-   {
-   name: 'foo',
-   },
-   {
-   name: 'bar'
-   },
-   {
-   name: 'baz'
-   },
-   {
-   name: 'boo'
-   }
-   ]
-  boob.circleRadius = 60
-
-  boob.target = conf.target
-
-  console.log('here is the boob', boob)
-  console.dir(boob)
-  */
-
   boob.init(conf)
   return boob
 }

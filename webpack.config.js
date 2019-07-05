@@ -5,7 +5,7 @@ const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 
 const config = {
   entry: {
-    'd3-progress-steps' : './src/index.js'
+    'svg-progress-steps' : './src/index.js'
   },
   output: {
     filename: `[name].min.js`,
