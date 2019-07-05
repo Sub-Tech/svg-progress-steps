@@ -177,12 +177,10 @@ const stepsInit = {
       const completeStepNode = this.target.querySelectorAll('.step-foreground-fill')[i]
       if (this.completeFill) {
         if (i < this.currentStep) {
-          console.log('happening', i)
           completeStepNode.style.transition = `fill ${stepSpeed * (i+1)}ms ease`
           completeStepNode.style.transitionDelay = `${stepSpeed * i + stepSpeed}ms`
           completeStepNode.style.fill = this.completeFill
         } else {
-          console.log('hello face', i)
           completeStepNode.style.fill = this.backgroundColor
         }
       }
@@ -194,7 +192,6 @@ const stepsInit = {
           completeStepTextNode.style.transitionDelay = `${stepSpeed * i * 0.5}ms`
           completeStepTextNode.style.fill = this.completeTextFill
         } else {
-          console.log('hello face', i)
           completeStepTextNode.style.fill = this.textFill
         }
       }
@@ -261,7 +258,7 @@ const stepsInit = {
 
 
 export default conf => {
-  const boob = Object.create(stepsInit)
-  boob.init(conf)
-  return boob
+  const progress = Object.create(stepsInit)
+  progress.init(conf)
+  return progress
 }
