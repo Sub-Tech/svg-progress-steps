@@ -47,20 +47,7 @@
     target: document.getElementById('target'),
     currentStep: 3,
     animationSpeed: 2000,
-    steps: [
-      {
-        name: 'foo',
-      },
-      {
-        name: 'bar'
-      },
-      {
-        name: 'baz'
-      },
-      {
-        name: ['boo', 'arse']
-      }
-    ]
+    steps: [ 'foo', 'bar', 'baz', ['boo', 'arse']]
   })
 
   const bar = stepsProgress({
@@ -71,38 +58,11 @@
     currentStepCompleted: 0.2,
     fontSize: 40,
     steps: [
-      {
-        name: ['signup', 'progress'],
-      }
+      ['signup', 'progress']
     ]
   })
 
-  const steps = [
-    {
-      name: '✌',
-    },
-    {
-      name: '2'
-    },
-    {
-      name: '3'
-    },
-    {
-      name: '4'
-    },
-    {
-      name: '5',
-    },
-    {
-      name: '6'
-    },
-    {
-      name: '7'
-    },
-    {
-      name: '8'
-    }
-  ]
+  const steps = ['✌', '2', '3', '5', '6', '7', '8']
 
   const baz = stepsProgress({
     target: document.getElementById('target3'),
@@ -183,7 +143,9 @@
       currentStep: +n[0],
       currentStepCompleted: +fraction
     })
-    bazzzz.updateProgress({
+    var newSteps = steps.concat()
+    newSteps[+n[0]] = (Math.round(+fraction * 100)) + '%'
+    bazzzz.updateStepsText(newSteps).updateProgress({
       currentStep: +n[0],
       currentStepCompleted: +fraction
     })
@@ -191,6 +153,8 @@
       currentStep: +n[0],
       currentStepCompleted: +fraction
     })
+
+
   })
 
 

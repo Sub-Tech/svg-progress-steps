@@ -91,13 +91,13 @@ const stepsInit = {
     })
   },
   renderTextNodes () {
+    // line test to get height of svg after viewbox
+    const testLine = this.target.querySelector('.line-test')
+    const testLength = testLine.getTotalLength();
+
     this.steps.map((d, i) => {
       const cx = (((( i + 0.5 ) / this.steps.length) + this.textXoffset) * 100).toString() + '%'
-      if (d.name) {
-        // line test to get height of svg after viewbox
-        const testLine = this.target.querySelector('.line-test')
-        const testLength = testLine.getTotalLength();
-
+      if (d) {
         const textNode = document.createElementNS("http://www.w3.org/2000/svg",'text')
         textNode.setAttribute('x',cx)
         textNode.setAttribute('y', (testLength / 2).toString())
@@ -107,13 +107,12 @@ const stepsInit = {
         textNode.setAttribute('fill', this.textFill)
         textNode.setAttribute('font-size',`${this.fontSize}`)
 
-        if (d.name.constructor === Array) {
-          const allTextSize = d.name.length * this.fontSize
+        if (d.constructor === Array) {
+          const allTextSize = d.length * this.fontSize
           const gapTop = (testLength - allTextSize + this.fontSize) / 2
 
-          d.name.map((t, i) => {
+          d.map((t, i) => {
             const y = gapTop + (i * this.fontSize)
-
             const tspan = document.createElementNS("http://www.w3.org/2000/svg", 'tspan')
             tspan.setAttribute('x',cx)
             tspan.setAttribute("alignment-baseline", "central")
@@ -123,7 +122,7 @@ const stepsInit = {
             textNode.appendChild(tspan)
           })
         } else {
-          const text = document.createTextNode(d.name)
+          const text = document.createTextNode(d)
           textNode.appendChild(text)
         }
         this.svgNode.appendChild(textNode)
@@ -242,6 +241,20 @@ const stepsInit = {
     this.currentStepCompleted = this.setNumber(conf.currentStepCompleted, this.currentStepCompleted)
     this.animationSpeed = this.setNumber(conf.animationSpeed, this.animationSpeed)
     this.animate(fn)
+  },
+  updateStepsText (steps) {
+    // grab all text nodes and remove
+    if (steps.length !== this.steps.length) {
+      console.error('svg-progress-steps: could not update steps text as unequal step length')
+      return this
+    }
+    this.steps = steps || this.steps
+    const allTextNodes = this.svgNode.querySelectorAll('.step-text')
+    for (let i = 0; i < allTextNodes.length; i++) {
+      allTextNodes[i].remove()
+    }
+    this.renderTextNodes()
+    return this
   },
   init (conf) {
     if (! conf.target) return
