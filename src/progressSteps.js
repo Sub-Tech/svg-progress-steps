@@ -166,8 +166,8 @@ const stepsInit = {
         completeStepNode.style.transitionDelay = `${lineSpeed}ms`
         completeStepNode.style.visibility = 'visible';
       } else {
-        completeStepNode.style.transition = `stroke-dasharray ${stepSpeed * (i+1)}ms ease-in-out`
-        completeStepNode.style.transitionDelay = `${stepSpeed * i * 0.5}ms`
+        completeStepNode.style.transition = `stroke-dasharray ${stepSpeed * i}ms ease-in-out`
+        completeStepNode.style.transitionDelay = `${stepSpeed * i}ms`
         completeStepNode.style.strokeDasharray = length + ", " + length
       }
     }
@@ -176,7 +176,7 @@ const stepsInit = {
       const completeStepNode = this.target.querySelectorAll('.step-foreground-fill')[i]
       if (this.completeFill) {
         if (i < this.currentStep) {
-          completeStepNode.style.transition = `fill ${stepSpeed * (i+1)}ms ease`
+          completeStepNode.style.transition = `fill ${stepSpeed * i}ms ease`
           completeStepNode.style.transitionDelay = `${stepSpeed * i + stepSpeed}ms`
           completeStepNode.style.fill = this.completeFill
         } else {
@@ -187,8 +187,8 @@ const stepsInit = {
       if (this.completeTextFill) {
         const completeStepTextNode = this.target.querySelectorAll('.step-text')[i]
         if (i < this.currentStep) {
-          completeStepTextNode.style.transition = `fill ${stepSpeed * (i+1) + 50}ms ease`
-          completeStepTextNode.style.transitionDelay = `${stepSpeed * i * 0.5}ms`
+          completeStepTextNode.style.transition = `fill ${stepSpeed * i}ms ease`
+          completeStepTextNode.style.transitionDelay = `${stepSpeed * i + stepSpeed}ms`
           completeStepTextNode.style.fill = this.completeTextFill
         } else {
           completeStepTextNode.style.fill = this.textFill
@@ -198,8 +198,8 @@ const stepsInit = {
       if (this.activeTextFill) {
         const completeStepTextNode = this.target.querySelectorAll('.step-text')[i]
         if (i === this.currentStep) {
-          completeStepTextNode.style.transition = `fill ${stepSpeed * (i+1) + 50}ms ease`
-          completeStepTextNode.style.transitionDelay = `${stepSpeed * i * 0.5}ms`
+          completeStepTextNode.style.transition = `fill ${stepSpeed * i}ms ease`
+          completeStepTextNode.style.transitionDelay = `${stepSpeed * i + stepSpeed}ms`
           completeStepTextNode.style.fill = this.activeTextFill
         }
       }
