@@ -1,14 +1,30 @@
+const getLineLength = lineElem => {
+  let x1 = lineElem.x1.baseVal.value
+  let x2 = lineElem.x2.baseVal.value
+  let y1 = lineElem.y1.baseVal.value
+  let y2 = lineElem.y2.baseVal.value
+  return Math.sqrt( (x2-=x1)*x2 + (y2-=y1)*y2 );
+}
+const getCircleLengthPoly = () => {
+  if (! window.SVGCircleElement || ! window.SVGCircleElement.prototype.getTotalLength) {
+    window.SVGCircleElement.prototype.getTotalLength = function() {
+      let radius = this.parentNode.clientHeight  // client height should be the circle radius
+      return 2 * Math.PI * radius;        // Get the circumference from 2πr
+    }
+  }
+}
+const nameSpace = `http://www.w3.org/2000/svg`
+
 const stepsInit = {
   target: null,
   steps: [],
   currentStep: 0,
   svgNode: null,
   renderSvg () {
-    this.svgNode = document.createElementNS("http://www.w3.org/2000/svg", "svg")
-    // viewBox="0 0 766 166" version="1.1" xmlns="http://www.w3.org/2000/svg"
+    this.svgNode = document.createElementNS(nameSpace, "svg")
     this.svgNode.setAttribute('viewBox', `0 0 ${this.circleRadius * 2 * this.steps.length * 2} ${((this.circleRadius * 2) + this.strokeWidth) * this.svgHeightRatio}`)
     this.svgNode.setAttribute('version', '1.1')
-    // this.svgNode.setAttributeNS("http://www.w3.org/2000/svg", 'xmlns', 'http://www.w3.org/2000/svg')
+    this.svgNode.setAttribute('xmlns:xlink', 'http://www.w3.org/1999/xlink')
     this.svgNode.setAttribute('height', `${this.circleRadius}`)  // viewBox will handle it
     this.svgNode.setAttribute('width', '100%')
     this.target.appendChild(this.svgNode)
@@ -18,8 +34,8 @@ const stepsInit = {
     const start = ((( 0.5 ) / this.steps.length) * 100).toString() + '%'
     const end = ((( (this.steps.length - 1) + 0.5 ) / this.steps.length) * 100).toString() + '%'
 
-    const lineBg = document.createElementNS("http://www.w3.org/2000/svg", 'line')
-    const lineFg = document.createElementNS("http://www.w3.org/2000/svg", 'line')
+    const lineBg = document.createElementNS(nameSpace, 'line')
+    const lineFg = document.createElementNS(nameSpace, 'line')
     lineBg.setAttribute('x1', start)
     lineBg.setAttribute('x2', end)
     lineBg.setAttribute('y1', '50%')
@@ -38,7 +54,7 @@ const stepsInit = {
     lineFg.setAttribute('stroke-dasharray', '0 10000')
     lineFg.setAttribute('stroke-dashoffset', '0')
 
-    const lineTest = document.createElementNS("http://www.w3.org/2000/svg", 'line')
+    const lineTest = document.createElementNS(nameSpace, 'line')
     lineTest.setAttribute('x1', '0%')
     lineTest.setAttribute('x2', '0%')
     lineTest.setAttribute('y1', '0%')
@@ -57,7 +73,7 @@ const stepsInit = {
     this.steps.map((d, i) => {
       const cx = ((( i + 0.5 ) / this.steps.length) * 100).toString() + '%'
 
-      const circleNodeFgBg = document.createElementNS("http://www.w3.org/2000/svg", 'circle')
+      const circleNodeFgBg = document.createElementNS(nameSpace, 'circle')
       circleNodeFgBg.setAttribute('cx', cx)
       circleNodeFgBg.setAttribute('cy', '50%')
       circleNodeFgBg.setAttribute('r', this.circleRadius.toString())
@@ -66,7 +82,7 @@ const stepsInit = {
       circleNodeFgBg.setAttribute('class', 'step-foreground-fill')
       this.svgNode.appendChild(circleNodeFgBg)
 
-      const circleNode = document.createElementNS("http://www.w3.org/2000/svg", 'circle')
+      const circleNode = document.createElementNS(nameSpace, 'circle')
       circleNode.setAttribute('cx', cx)
       circleNode.setAttribute('cy', '50%')
       circleNode.setAttribute('r', this.circleRadius.toString())
@@ -76,7 +92,7 @@ const stepsInit = {
       circleNode.setAttribute('class', 'step-background')
       this.svgNode.appendChild(circleNode)
 
-      const circleNodeFg = document.createElementNS("http://www.w3.org/2000/svg", 'circle')
+      const circleNodeFg = document.createElementNS(nameSpace, 'circle')
       circleNodeFg.setAttribute('cx', cx)
       circleNodeFg.setAttribute('cy', '50%')
       circleNodeFg.setAttribute('r', this.circleRadius.toString())
@@ -93,12 +109,12 @@ const stepsInit = {
   renderTextNodes () {
     // line test to get height of svg after viewbox
     const testLine = this.target.querySelector('.line-test')
-    const testLength = testLine.getTotalLength();
+    const testLength = getLineLength(testLine);
 
     this.steps.map((d, i) => {
       const cx = (((( i + 0.5 ) / this.steps.length) + this.textXoffset) * 100).toString() + '%'
       if (d) {
-        const textNode = document.createElementNS("http://www.w3.org/2000/svg",'text')
+        const textNode = document.createElementNS(nameSpace,'text')
         textNode.setAttribute('x',cx)
         textNode.setAttribute('y', (testLength / 2).toString())
         textNode.setAttribute("alignment-baseline", "central")
@@ -113,7 +129,7 @@ const stepsInit = {
 
           d.map((t, i) => {
             const y = gapTop + (i * this.fontSize)
-            const tspan = document.createElementNS("http://www.w3.org/2000/svg", 'tspan')
+            const tspan = document.createElementNS(nameSpace, 'tspan')
             tspan.setAttribute('x',cx)
             tspan.setAttribute("alignment-baseline", "central")
             tspan.setAttribute('y', y)
@@ -136,7 +152,7 @@ const stepsInit = {
     // line animation
     const completedLine = this.target.querySelector('.line-complete')
     completedLine.style.transition = `stroke-dasharray ${lineSpeed}ms ease-in-out`
-    const lineLength = completedLine.getTotalLength();
+    const lineLength = getLineLength(completedLine);
     const completeLineStroke = lineLength * ((this.currentStep + (this.currentStep/this.steps.length)) / this.steps.length)
     completedLine.style.strokeDasharray = completeLineStroke  + ", " + lineLength
 
@@ -261,6 +277,8 @@ const stepsInit = {
     if (! conf.target) return
     if (! conf.steps || ! conf.steps.length) return
 
+    getCircleLengthPoly()  // check if polyfill required and set if so
+
     this.setConfig(conf)
     this.renderSvg()
     this.renderBar()
@@ -269,7 +287,6 @@ const stepsInit = {
     this.animate()
   }
 }
-
 
 export default conf => {
   const progress = Object.create(stepsInit)
