@@ -14,19 +14,27 @@ const getCircleLengthPoly = () => {
   }
 }
 const nameSpace = `http://www.w3.org/2000/svg`
+const libName = 'svg-progress-steps'
 
 const stepsInit = {
   target: null,
   steps: [],
   currentStep: 0,
   svgNode: null,
+  setAttrs (node, props) {
+    for (let i = 0; i < props.length; i++) {
+      node.setAttribute(props[i][0], props[i][1])
+    }
+  },
   renderSvg () {
     this.svgNode = document.createElementNS(nameSpace, "svg")
-    this.svgNode.setAttribute('viewBox', `0 0 ${this.circleRadius * 2 * this.steps.length * 2} ${((this.circleRadius * 2) + this.strokeWidth) * this.svgHeightRatio}`)
-    this.svgNode.setAttribute('version', '1.1')
-    this.svgNode.setAttribute('xmlns:xlink', 'http://www.w3.org/1999/xlink')
-    this.svgNode.setAttribute('height', `${this.circleRadius}`)  // viewBox will handle it
-    this.svgNode.setAttribute('width', '100%')
+    this.setAttrs(this.svgNode, [
+      ['viewBox', `0 0 ${this.circleRadius * 2 * this.steps.length * 2} ${((this.circleRadius * 2) + this.strokeWidth) * this.svgHeightRatio}`],
+      ['version', 'http://www.w3.org/1999/xlink'],
+      ['xmlns:xlink', 'http://www.w3.org/1999/xlink'],
+      ['height', `${this.circleRadius}`],
+      ['width', '100%']
+    ])
     this.target.appendChild(this.svgNode)
   },
   renderBar () {
@@ -36,36 +44,39 @@ const stepsInit = {
 
     const lineBg = document.createElementNS(nameSpace, 'line')
     const lineFg = document.createElementNS(nameSpace, 'line')
-    lineBg.setAttribute('x1', start)
-    lineBg.setAttribute('x2', end)
-    lineBg.setAttribute('y1', '50%')
-    lineBg.setAttribute('y2', '50%')
-    lineBg.setAttribute('class', 'line-bg')
-    lineBg.setAttribute('stroke', this.colorBg)
-    lineBg.setAttribute('stroke-width', `${this.strokeWidth}px`)
-
-    lineFg.setAttribute('x1', start)
-    lineFg.setAttribute('x2', end)
-    lineFg.setAttribute('y1', '50%')
-    lineFg.setAttribute('y2', '50%')
-    lineFg.setAttribute('class', 'line-complete')
-    lineFg.setAttribute('stroke', this.colorFg)
-    lineFg.setAttribute('stroke-width', `${this.strokeWidth}px`)
-    lineFg.setAttribute('stroke-dasharray', '0 10000')
-    lineFg.setAttribute('stroke-dashoffset', '0')
-
-    const lineTest = document.createElementNS(nameSpace, 'line')
-    lineTest.setAttribute('x1', '0%')
-    lineTest.setAttribute('x2', '0%')
-    lineTest.setAttribute('y1', '0%')
-    lineTest.setAttribute('y2', '100%')
-    lineTest.setAttribute('class', 'line-test')
-    lineTest.setAttribute('stroke', this.colorFg)
-    lineTest.setAttribute('stroke-width', `${this.strokeWidth}px`)
-    lineTest.setAttribute('stroke-dasharray', '0 10000')
-    lineTest.setAttribute('stroke-dashoffset', '0')
-
-    this.svgNode.appendChild(lineTest)
+    const lineHeightGauge = document.createElementNS(nameSpace, 'line')
+    this.setAttrs(lineBg, [
+      ['x1', start],
+      ['x2', end],
+      ['y1', '50%'],
+      ['y2', '50%'],
+      ['class', 'line-bg'],
+      ['stroke', this.colorBg],
+      ['stroke-width', `${this.strokeWidth}`]
+    ])
+    this.setAttrs(lineFg, [
+      ['x1', start],
+      ['x2', end],
+      ['y1', '50%'],
+      ['y2', '50%'],
+      ['class', 'line-complete'],
+      ['stroke', this.colorFg],
+      ['stroke-width', `${this.strokeWidth}`],
+      ['stroke-dasharray', '0 10000'],
+      ['stroke-dashoffset', '0']
+    ])
+    this.setAttrs(lineHeightGauge, [
+      ['x1', '0%'],
+      ['x2', '0%'],
+      ['y1', '0%'],
+      ['y2', '100%'],
+      ['class', 'line-test'],
+      ['stroke', this.colorFg],
+      ['stroke-width', `${this.strokeWidth}`],
+      ['stroke-dasharray', '0 10000'],
+      ['stroke-dashoffset', '0']
+    ])
+    this.svgNode.appendChild(lineHeightGauge)
     this.svgNode.appendChild(lineBg)
     this.svgNode.appendChild(lineFg)
   },
@@ -74,36 +85,41 @@ const stepsInit = {
       const cx = ((( i + 0.5 ) / this.steps.length) * 100).toString() + '%'
 
       const circleNodeFgBg = document.createElementNS(nameSpace, 'circle')
-      circleNodeFgBg.setAttribute('cx', cx)
-      circleNodeFgBg.setAttribute('cy', '50%')
-      circleNodeFgBg.setAttribute('r', this.circleRadius.toString())
-      circleNodeFgBg.setAttribute('stroke-width', `${this.strokeWidth}`)
-      circleNodeFgBg.setAttribute('fill', this.backgroundColor)
-      circleNodeFgBg.setAttribute('class', 'step-foreground-fill')
+      this.setAttrs(circleNodeFgBg, [
+        ['cx', cx],
+        ['cy', '50%'],
+        ['r', this.circleRadius.toString()],
+        ['stroke-width', `${this.strokeWidth}`],
+        ['fill', this.backgroundColor],
+        ['class', 'step-foreground-fill']
+      ])
       this.svgNode.appendChild(circleNodeFgBg)
 
       const circleNode = document.createElementNS(nameSpace, 'circle')
-      circleNode.setAttribute('cx', cx)
-      circleNode.setAttribute('cy', '50%')
-      circleNode.setAttribute('r', this.circleRadius.toString())
-      circleNode.setAttribute('stroke', this.colorBg)
-      circleNode.setAttribute('stroke-width', `${this.strokeWidth}`)
-      circleNode.setAttribute('fill', 'none')
-      circleNode.setAttribute('class', 'step-background')
+      this.setAttrs(circleNode, [
+        ['cx', cx],
+        ['cy', '50%'],
+        ['r', this.circleRadius.toString()],
+        ['stroke', this.colorBg],
+        ['stroke-width', `${this.strokeWidth}`],
+        ['fill', 'none'],
+        ['class', 'step-background']
+      ])
       this.svgNode.appendChild(circleNode)
 
       const circleNodeFg = document.createElementNS(nameSpace, 'circle')
-      circleNodeFg.setAttribute('cx', cx)
-      circleNodeFg.setAttribute('cy', '50%')
-      circleNodeFg.setAttribute('r', this.circleRadius.toString())
-      circleNodeFg.setAttribute('stroke', this.colorFg)
-      circleNodeFg.setAttribute('stroke-width', `${this.strokeWidth}`)
-      circleNodeFg.setAttribute('fill', 'none')
-      circleNodeFg.setAttribute('class', 'step-foreground')
-      circleNodeFg.setAttribute('stroke-dasharray', '0 10000')
-      circleNodeFg.setAttribute('stroke-dashoffset', '0')
+      this.setAttrs(circleNodeFg, [
+        ['cx', cx],
+        ['cy', '50%'],
+        ['r', this.circleRadius.toString()],
+        ['stroke', this.colorFg],
+        ['stroke-width', `${this.strokeWidth}`],
+        ['fill', 'none'],
+        ['class', 'step-foreground'],
+        ['stroke-dasharray', '0 10000'],
+        ['stroke-dashoffset', '0']
+      ])
       this.svgNode.appendChild(circleNodeFg)
-      // text nodes
     })
   },
   renderTextNodes () {
@@ -115,13 +131,15 @@ const stepsInit = {
       const cx = (((( i + 0.5 ) / this.steps.length) + this.textXoffset) * 100).toString() + '%'
       if (d) {
         const textNode = document.createElementNS(nameSpace,'text')
-        textNode.setAttribute('x',cx)
-        textNode.setAttribute('y', (testLength / 2).toString())
-        textNode.setAttribute("alignment-baseline", "central")
-        textNode.setAttribute('text-anchor','middle')
-        textNode.setAttribute('class','step-text')
-        textNode.setAttribute('fill', this.textFill)
-        textNode.setAttribute('font-size',`${this.fontSize}`)
+        this.setAttrs(textNode, [
+          ['x',cx],
+          ['y', (testLength / 2).toString()],
+          ['alignment-baseline', 'central'],
+          ['text-anchor','middle'],
+          ['class','step-text'],
+          ['fill', this.textFill],
+          ['font-size',`${this.fontSize}`]
+        ])
 
         if (d.constructor === Array) {
           const allTextSize = d.length * this.fontSize
@@ -160,7 +178,7 @@ const stepsInit = {
     for (let i = this.steps.length - 1; i > this.currentStep; i--) {
       const completeStepNode = this.target.querySelectorAll('.step-foreground')[i]
       if (! completeStepNode) {
-        console.error('svg-progress-steps: missing step foreground')
+        console.error(`${libName}: missing step foreground`)
         continue
       }
       completeStepNode.style.transition = ''
@@ -170,7 +188,7 @@ const stepsInit = {
     for (let i = 0; i <= this.currentStep; i++) {
       const completeStepNode = this.target.querySelectorAll('.step-foreground')[i]
       if (! completeStepNode) {
-        console.error('svg-progress-steps: missing step foreground')
+        console.error(`${libName}: missing step foreground`)
         continue
       }
       const length = completeStepNode.getTotalLength();
@@ -262,7 +280,7 @@ const stepsInit = {
   updateStepsText (steps) {
     // grab all text nodes and remove
     if (steps.length !== this.steps.length) {
-      console.error('svg-progress-steps: could not update steps text as unequal step length')
+      console.error(`${libName}: could not update steps text as unequal step length`)
       return this
     }
     this.steps = steps || this.steps
