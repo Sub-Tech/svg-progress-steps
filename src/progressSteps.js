@@ -239,7 +239,6 @@ const stepsInit = {
     if (! conf.target) return
     if (! conf.steps || ! conf.steps.length) return
 
-    getCircleLengthPoly()  // check if polyfill required and set if so
     removePoly() // ie no remove on element
 
     this.setConfig(conf)
