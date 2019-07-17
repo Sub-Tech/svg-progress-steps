@@ -41,7 +41,6 @@ foo.updateStepsText(['✔️', '✔️', '✔️', ['boo', '50%']]).updateProgre
     colorBg: string hex|colorname|rgb|rgba def '#cccccc'
     colorFg: string hex|colorname|rgb|rgba def 'limeGreen'
     strokeWidth: int def 12
-    svgHeightRatio: int def 1
     textFill: string hex|colorname|rgb|rgba def 'black'
     fontSize: int def 40
     completeFill: string hex|colorname|rgb|rgba def ''
