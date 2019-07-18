@@ -113,14 +113,14 @@ const stepsInit = {
   animate (callback) {
     this.pathAnimate()
 
-    const stepSpeed =  this.animationSpeed / this.steps.length
+    const stepSpeed =  this.animationSpeed / (this.currentStep + 1)
     this.steps.map((s, i) => {
       const completeStepNode = this.target.querySelectorAll('.step-foreground-fill')[i]
       if (this.completeFill) {
         completeStepNode.style.transitionDelay = `0ms`
         if (i < this.currentStep) {
           completeStepNode.style.transition = `fill ${stepSpeed}ms ease`
-          completeStepNode.style.transitionDelay = `${stepSpeed * (i+1)}ms`
+          completeStepNode.style.transitionDelay = `${stepSpeed * i}ms`
           completeStepNode.style.fill = this.completeFill
         } else {
           completeStepNode.style.fill = this.backgroundColor
@@ -132,7 +132,7 @@ const stepsInit = {
       if (this.completeTextFill) {
         if (i < this.currentStep) {
           completeStepTextNode.style.transition = `fill ${stepSpeed}ms ease`
-          completeStepTextNode.style.transitionDelay = `${stepSpeed * (i+1)}ms`
+          completeStepTextNode.style.transitionDelay = `${stepSpeed * i}ms`
           completeStepTextNode.style.fill = this.completeTextFill
         }
       }
@@ -140,7 +140,7 @@ const stepsInit = {
       if (this.activeTextFill) {
         if (i === this.currentStep) {
           completeStepTextNode.style.transition = `fill ${stepSpeed}ms ease`
-          completeStepTextNode.style.transitionDelay = `${stepSpeed * (i+1)}ms`
+          completeStepTextNode.style.transitionDelay = `${stepSpeed * i}ms`
           completeStepTextNode.style.fill = this.activeTextFill
         }
       }

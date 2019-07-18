@@ -52,6 +52,10 @@ foo.updateStepsText(['✔️', '✔️', '✔️', ['boo', '50%']]).updateProgre
 
 Or check out the example html
 
+##### Browser support
+Works on browsers with basic svg support eg IE9+
+Transitions only work with browsers supporting css transitions :)
+
 
 
 
