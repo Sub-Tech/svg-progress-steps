@@ -48,7 +48,7 @@ foo.updateStepsText(['✔️', '✔️', '✔️', ['boo', '50%']]).updateProgre
     activeTextFill: string hex|colorname|rgb|rgba def ''
 ```
 
-![Gif example](https://gph.is/g/E1G5Rz1)
+![Gif example](https://media.giphy.com/media/WtUlEdWDjMnDPaGsHp/giphy.gif)
 
 Or check out the example html
 
