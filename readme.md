@@ -1,6 +1,6 @@
 # svg-progress-steps
 
-A zero dependency 7KB micro library for dynamically updating progress using svgs and js
+A zero dependency micro library for dynamically updating progress using svgs and js
 
 #### Why
 Could not find a library that allowed partial step completeness.  Pure css versions have issues when background colour on parent is set, sending the :after line to be hidden
