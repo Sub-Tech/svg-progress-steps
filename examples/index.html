@@ -7,13 +7,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/css/bootstrap-grid.min.css" rel="stylesheet" type="text/css" />
   <style>
-    .step-active {
-      /*
-      transition: stroke-dasharray 850ms ease-in-out;
-      stroke-dasharray: 0 1000;
-      stroke-dashoffset: 0;
-      visibility: hidden;
-      */
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
     }
   </style>
 </head>
@@ -22,15 +17,25 @@
   <div id="target"></div>
 </div>
 
-<div id="target2"></div>
+<div class="row">
+  <div class="col">
+    <div id="target2"></div>
+  </div>
+  <div class="col">
+    <div id="target22"></div>
+  </div>
+  <div class="col">
+    <div id="target23"></div>
+  </div>
+</div>
 
 
-<hr>
+<!--hr>
 <div style="text-align: center;">
   <div id="sliderValue">0</div>
   <label for="changeSteps">Progress slider group</label>
-  <input type="range" style="width: 100%;" step="0.1" value="0" max="8" min="0" id="changeSteps">
-</div>
+  <input type="range" style="width: 100%;" step="0.1" value="0" max="6.9" min="0" id="changeSteps">
+</div-->
 
 <div id="target3"></div>
 
@@ -48,9 +53,10 @@
 <script>
   var foo = stepsProgress({
     target: document.getElementById('target'),
+    fontSize: 30,
     currentStep: 3,
     animationSpeed: 2000,
-    steps: [ 'foo', 'bar', 'baz', ['boo', 'arse']]
+    steps: [ 'foo', 'bar', 'baz', ['woop', 'woop']]
   })
 
   var bar = stepsProgress({
@@ -63,6 +69,33 @@
     steps: [
       ['signup', 'progress', 'complete']
     ]
+  })
+
+  var bar2 = stepsProgress({
+    target: document.getElementById('target22'),
+    circleRadius: 120,
+    strokeWidth: 30,
+    currentStep: 0,
+    currentStepCompleted: 0.6,
+    fontSize: 100,
+    textFill: '#f53266',
+    colorFg: '#f53266',
+    colorBg: '#f5e0bb',
+    steps: ['60%']
+  })
+
+  var bar23 = stepsProgress({
+    target: document.getElementById('target23'),
+    circleRadius: 120,
+    strokeWidth: 30,
+    currentStep: 0,
+    currentStepCompleted: 0.8,
+    fontSize: 50,
+    backgroundColor: '#f5e0bb',
+    textFill: '#f53266',
+    colorFg: '#f53266',
+    colorBg: '#f5cb7b',
+    steps: [['Almost', 'there']]
   })
 
   var steps = ['ヅ', '2', '3', '5', '6', '7', '8']
@@ -90,6 +123,7 @@
     animationSpeed: 750,
     colorFg: '#f5f36b',
     colorBg: '#6ec7f5',
+    activeTextFill: '#f5b254',
     currentStep: 0,
     steps: steps
   })
@@ -113,8 +147,7 @@
 
   var bazzzzingTon = stepsProgress({
     target: document.getElementById('target6'),
-    circleRadius: 100,
-    svgHeightRatio: 0.3,
+    circleRadius: 150,
     animationSpeed: 1000,
     fontSize: 120,
     strokeWidth: 30,
@@ -122,9 +155,10 @@
     colorBg: '#dbc2d4',
     backgroundColor: '#f5dcee',
     textFill: '#a993a2',
-    activeTextFill: '#7d28f5',
+    activeTextFill: 'white',
+    activeFill: '#f50f65',
     currentStep: 0,
-    steps: steps.concat(steps)
+    steps: steps
   })
 
 
@@ -169,15 +203,14 @@
   var i = 0
   setInterval(function () {
     i++
-    if (i > 6) return
+    if (i > 6) i = 0
+    if (i % 2) i ++
     var x = i - 1
     var f = x ? x / 10 : 0
     f = i === 3 ? 0 : f
     doUpdate(i, f)
-  }, 3000)
+  }, 1250)
   */
-
-  console.log(foo)
 
 </script>
 

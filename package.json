@@ -1,7 +1,7 @@
 {
-  "name": "d3-progress-steps",
+  "name": "svg-progress-steps",
   "version": "1.0.0",
-  "description": "getting the d3 dong out for progress steps",
+  "description": "getting the svg dong out for progress steps",
   "main": "index.js",
   "author": "ross matheson",
   "license": "none",
@@ -15,8 +15,8 @@
     "webpack": "^4.35.2"
   },
   "scripts": {
-    "dev": "webpack --watch",
-    "build": "webpack --mode=production"
+    "dev": "webpack --watch --mode=development --env.development",
+    "build": "webpack --mode=production --env.production"
   },
   "devDependencies": {
     "webpack-cli": "^3.3.5"

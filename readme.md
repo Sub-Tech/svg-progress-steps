@@ -1,6 +1,6 @@
 # svg-progress-steps
 
-Micro library for dynamically updating progress using svgs and js
+A zero dependency 7KB micro library for dynamically updating progress using svgs and js
 
 #### Why
 Could not find a library that allowed partial step completeness.  Pure css versions have issues when background colour on parent is set, sending the :after line to be hidden
@@ -48,7 +48,7 @@ foo.updateStepsText(['✔️', '✔️', '✔️', ['boo', '50%']]).updateProgre
     activeTextFill: string hex|colorname|rgb|rgba def ''
 ```
 
-![Gif example](examples/svg-progress-bar-example.gif)
+![Gif example](https://gph.is/g/E1G5Rz1)
 
 Or check out the example html
 

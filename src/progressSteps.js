@@ -7,7 +7,8 @@ const removePoly = () => {
     }
   }
 }
-const nameSpace = `http://www.w3.org/2000/svg`
+const nameSpace = 'http://www.w3.org/2000/svg'
+const w3xlink = 'http://www.w3.org/1999/xlink'
 const libName = 'svg-progress-steps'
 
 const stepsInit = {
@@ -23,31 +24,28 @@ const stepsInit = {
   renderSvg () {
     this.svgNode = document.createElementNS(nameSpace, "svg")
     this.setAttrs(this.svgNode, [
-      ['viewBox', `0 0 ${this.circleRadius * 2 * this.steps.length * 2} ${((this.circleRadius * 2) + this.strokeWidth)}`],
-      ['version', 'http://www.w3.org/1999/xlink'],
-      ['xmlns:xlink', 'http://www.w3.org/1999/xlink'],
-      ['height', `${this.circleRadius}`],
+      ['viewBox', `0 0 ${this.cR * 2 * this.steps.length * 2} ${((this.cR * 2) + this.strokeWidth)}`],
+      ['version', w3xlink],
+      ['xmlns:xlink', w3xlink],
+      ['height', `${this.cR}`],
       ['width', '100%']
     ])
     this.target.appendChild(this.svgNode)
   },
   renderSvgCircles () {
-
     this.steps.map((d, i) => {
-      const diameter = this.circleRadius*2
-      const cx = (diameter*2) * (i+0.5)
+      const cx = (this.cD*2) * (i+0.5)
       const circleNodeFgBg = document.createElementNS(nameSpace, 'circle')
       this.setAttrs(circleNodeFgBg, [
         ['cx', cx],
         ['cy', '50%'],
-        ['r', this.circleRadius.toString()],
+        ['r', `${this.cR}`],
         ['stroke-width', `${this.strokeWidth}`],
         ['fill', this.backgroundColor],
         ['class', 'step-foreground-fill']
       ])
       this.svgNode.appendChild(circleNodeFgBg)
     })
-
   },
   getMedian (values) {
     const half = Math.floor(values.length / 2);
@@ -57,11 +55,10 @@ const stepsInit = {
       return (values[half - 1] + values[half]) / 2.0
   },
   renderTextNodes () {
-    const diameter = this.circleRadius*2
-    const yBase = this.circleRadius + (this.strokeWidth/2) + (this.fontSize/3)  // don't want to use dominant-baseline /3 looks right
+    const yBase = this.cR + (this.strokeWidth/2) + (this.fontSize/3)  // don't want to use dominant-baseline /3 looks right
 
     this.steps.map((d, i) => {
-      const cx = (diameter*2) * (i+0.5)
+      const cx = (this.cD*2) * (i+0.5)
 
       if (d) {
         const textNode = document.createElementNS(nameSpace,'text')
@@ -81,8 +78,10 @@ const stepsInit = {
             const offset = i+1 - median
             const offsetY = yBase + (offset*this.fontSize)
             const tspan = document.createElementNS(nameSpace, 'tspan')
-            tspan.setAttribute('x', cx.toString())
-            tspan.setAttribute('y', offsetY.toString())
+            this.setAttrs(tspan, [
+              ['x', `${cx}`],
+              ['y', `${offsetY}`]
+            ])
             const spanContent = document.createTextNode(t)
             tspan.appendChild(spanContent)
             textNode.appendChild(tspan)
@@ -100,15 +99,20 @@ const stepsInit = {
     for (let i=0; i < pathLines.length; i++) {
       const length = pathLines[i].getTotalLength()
       pathLines[i].style.transition = `stroke-dasharray ${this.animationSpeed}ms ease-in-out`
-      const diameter = (this.circleRadius*2)
-      const semiCircleLength = Math.PI * this.circleRadius
-      const lineCompletedLength = (semiCircleLength * this.currentStep) + (diameter * this.currentStep) - (this.strokeWidth/2)
+      const semiCircleLength = Math.PI * this.cR
+      const lineCompletedLength = (semiCircleLength * this.currentStep) + (this.cD * this.currentStep) - (this.strokeWidth/2)
       const fractionComplete = this.currentStepCompleted ? semiCircleLength * this.currentStepCompleted : 0
+      const lineCompleted = lineCompletedLength+fractionComplete
       setTimeout(function () {
         // annoying, wait till next tick or animation does not happen on load.  todo: figure out proper fix
-        pathLines[i].style.strokeDasharray = (lineCompletedLength+fractionComplete) + ", " + length
+        pathLines[i].style.strokeDasharray = (lineCompleted < 0 ? 0 : lineCompleted) + ", " + length
       }, 0)
     }
+  },
+  setTransActive (node, speed, delay, fill) {
+    node.style.transition = `fill ${speed}ms ease`
+    node.style.transitionDelay = `${delay}ms`
+    node.style.fill = fill
   },
   animate (callback) {
     this.pathAnimate()
@@ -119,8 +123,16 @@ const stepsInit = {
       if (this.completeFill) {
         completeStepNode.style.transitionDelay = `0ms`
         if (i < this.currentStep) {
-          completeStepNode.style.transition = `fill ${stepSpeed}ms ease`
-          completeStepNode.style.transitionDelay = `${stepSpeed * i}ms`
+          this.setTransActive(completeStepNode, stepSpeed, stepSpeed * i, this.completeFill)
+        } else {
+          completeStepNode.style.fill = this.backgroundColor
+        }
+      }
+
+      if (this.activeFill) {
+        if (i === this.currentStep) {
+          this.setTransActive(completeStepNode, stepSpeed, stepSpeed * i, this.activeFill)
+        } else if (i < this.currentStep && this.currentStep) {
           completeStepNode.style.fill = this.completeFill
         } else {
           completeStepNode.style.fill = this.backgroundColor
@@ -131,17 +143,13 @@ const stepsInit = {
       completeStepTextNode.style.fill = this.textFill
       if (this.completeTextFill) {
         if (i < this.currentStep) {
-          completeStepTextNode.style.transition = `fill ${stepSpeed}ms ease`
-          completeStepTextNode.style.transitionDelay = `${stepSpeed * i}ms`
-          completeStepTextNode.style.fill = this.completeTextFill
+          this.setTransActive(completeStepTextNode, stepSpeed, stepSpeed * i, this.completeTextFill)
         }
       }
 
       if (this.activeTextFill) {
         if (i === this.currentStep) {
-          completeStepTextNode.style.transition = `fill ${stepSpeed}ms ease`
-          completeStepTextNode.style.transitionDelay = `${stepSpeed * i}ms`
-          completeStepTextNode.style.fill = this.activeTextFill
+          this.setTransActive(completeStepTextNode, stepSpeed, stepSpeed * i, this.activeTextFill)
         }
       }
     })
@@ -150,22 +158,19 @@ const stepsInit = {
       callback(this.target.querySelectorAll('.step-text')[this.currentStep])
     }
   },
-  path () {
-    const pl = document.createElementNS(nameSpace, 'path')
-    const pu = document.createElementNS(nameSpace, 'path')
-    const pbgl = document.createElementNS(nameSpace, 'path')
-    const pbgu = document.createElementNS(nameSpace, 'path')
-
-    const paths = [pbgu, pbgl, pu, pl]
+  createPath () {
+    return document.createElementNS(nameSpace, 'path')
+  },
+  renderPath () {
     const pathULSwitch = [1,0,1,0]
-    const diameter = this.circleRadius*2
-    const width = this.circleRadius * 2 * this.steps.length * 2
+    const paths = pathULSwitch.map(d => this.createPath())
+    const width = this.cD * this.steps.length * 2
     paths.map((p, i) => {
-      let pathMap = `M ${this.circleRadius} ${this.circleRadius + (this.strokeWidth/2)} `
+      let pathMap = `M ${this.cR} ${this.cR + (this.strokeWidth/2)} `
       for (let x=1; x <= this.steps.length; x++) {
-        pathMap += `a1 1 0 ${pathULSwitch[i]} ${pathULSwitch[i]} ${diameter} 0 `
+        pathMap += `a1 1 0 ${pathULSwitch[i]} ${pathULSwitch[i]} ${this.cD} 0 `
         if (x !== this.steps.length) {
-          pathMap += `h${diameter} `
+          pathMap += `h${this.cD} `
         }
       }
       if (i > 1) {  // foreground
@@ -197,23 +202,22 @@ const stepsInit = {
   },
   setConfig (conf) {
     this.target = conf.target
-    this.circleRadius = this.setNumber(conf.circleRadius, 60)
+    this.cR = this.setNumber(conf.circleRadius, 60)
     this.currentStep = this.setNumber(conf.currentStep, 0)
     this.currentStepCompleted = this.setNumber(conf.currentStepCompleted, 0)
     this.animationSpeed = this.setNumber(conf.animationSpeed, 500)
-    this.textSizeRatio = this.setNumber(conf.textSizeRatio, 1)
     this.steps = conf.steps || []
     this.backgroundColor = this.setString(conf.backgroundColor, '#ffffff')
     this.colorBg = this.setString(conf.colorBg, '#cccccc')
     this.colorFg = this.setString(conf.colorFg, 'limeGreen')
     this.strokeWidth = this.setNumber(conf.strokeWidth, 12)
-    this.textYPosition = this.setNumber(conf.textYPosition, 50)
-    this.textXoffset = this.setNumber(conf.textXoffset, 0)
     this.textFill = this.setString(conf.textFill, 'black')
     this.fontSize = this.setNumber(conf.fontSize, 40)
     this.completeFill = this.setString(conf.completeFill, '')
+    this.activeFill = this.setString(conf.activeFill, '')
     this.completeTextFill = this.setString(conf.completeTextFill, '')
     this.activeTextFill = this.setString(conf.activeTextFill, '')
+    this.cD =  this.cR * 2
   },
   updateProgress (conf, fn) {
     this.currentStep = this.setNumber(conf.currentStep, this.currentStep)
@@ -244,8 +248,8 @@ const stepsInit = {
     this.setConfig(conf)
     this.renderSvg()
     this.renderSvgCircles()
+    this.renderPath()
     this.renderTextNodes()
-    this.path()
     this.animate()
   }
 }
