@@ -23,8 +23,11 @@ const stepsInit = {
   },
   renderSvg () {
     this.svgNode = document.createElementNS(nameSpace, "svg")
+    const dimensions = this.isStandardType()
+      ? `${this.cR * 2 * this.steps.length * 2} ${((this.cR * 2) + this.strokeWidth)}`
+      : `${this.cR * 2 * this.steps.length} ${((this.cR * 2) + this.strokeWidth)}`
     this.setAttrs(this.svgNode, [
-      ['viewBox', `0 0 ${this.cR * 2 * this.steps.length * 2} ${((this.cR * 2) + this.strokeWidth)}`],
+      ['viewBox', `0 0 ${dimensions}`],
       ['version', w3xlink],
       ['xmlns:xlink', w3xlink],
       ['height', `${this.cR}`],
@@ -34,7 +37,7 @@ const stepsInit = {
   },
   renderSvgCircles () {
     this.steps.map((d, i) => {
-      const cx = (this.cD*2) * (i+0.5)
+      const cx = this.isStandardType() ? (this.cD*2) * (i+0.5) : (this.cD*1) * (i+0.5)
       const circleNodeFgBg = document.createElementNS(nameSpace, 'circle')
       this.setAttrs(circleNodeFgBg, [
         ['cx', cx],
@@ -58,16 +61,16 @@ const stepsInit = {
     const yBase = this.cR + (this.strokeWidth/2) + (this.fontSize/3)  // don't want to use dominant-baseline /3 looks right
 
     this.steps.map((d, i) => {
-      const cx = (this.cD*2) * (i+0.5)
+      const cx = this.isStandardType() ? (this.cD*2) * (i+0.5) : (this.cD*1) * (i+0.5)
 
       if (d) {
         const textNode = document.createElementNS(nameSpace,'text')
         this.setAttrs(textNode, [
           ['x',cx],
-          ['y', yBase],
+          ['y',yBase],
           ['text-anchor','middle'],
           ['class','step-text'],
-          ['fill', this.textFill],
+          ['fill',this.textFill],
           ['font-size',`${this.fontSize}`]
         ])
 
@@ -94,13 +97,18 @@ const stepsInit = {
       }
     })
   },
+  isStandardType () {
+    return this.styleType === 'standard'  // does not work if more styles added
+  },
   pathAnimate () {
     const pathLines = this.target.querySelectorAll('.path-progress')
     for (let i=0; i < pathLines.length; i++) {
       const length = pathLines[i].getTotalLength()
       pathLines[i].style.transition = `stroke-dasharray ${this.animationSpeed}ms ease-in-out`
       const semiCircleLength = Math.PI * this.cR
-      const lineCompletedLength = (semiCircleLength * this.currentStep) + (this.cD * this.currentStep) - (this.strokeWidth/2)
+      const lineCompletedLength = this.isStandardType()
+        ? (semiCircleLength * this.currentStep) + (this.cD * this.currentStep) - (this.strokeWidth/2)
+        : semiCircleLength * this.currentStep
       const fractionComplete = this.currentStepCompleted ? semiCircleLength * this.currentStepCompleted : 0
       const lineCompleted = lineCompletedLength+fractionComplete
       setTimeout(function () {
@@ -162,18 +170,31 @@ const stepsInit = {
     return document.createElementNS(nameSpace, 'path')
   },
   renderPath () {
-    const pathULSwitch = [1,0,1,0]
-    const paths = pathULSwitch.map(d => this.createPath())
-    const width = this.cD * this.steps.length * 2
+    const pathULSwitch = {
+      standard: [1,0,1,0],
+      snake: [1,1]
+    }
+    const foregroundIndex = this.isStandardType() ? 1 : 0
+    const paths = pathULSwitch[this.styleType].map(d => this.createPath())
     paths.map((p, i) => {
-      let pathMap = `M ${this.cR} ${this.cR + (this.strokeWidth/2)} `
-      for (let x=1; x <= this.steps.length; x++) {
-        pathMap += `a1 1 0 ${pathULSwitch[i]} ${pathULSwitch[i]} ${this.cD} 0 `
-        if (x !== this.steps.length) {
-          pathMap += `h${this.cD} `
+      let pathMap = this.isStandardType()
+        ? `M ${this.cR} ${this.cR + (this.strokeWidth/2)} `
+        : `M ${0} ${this.cR + (this.strokeWidth/2)} `
+      if (this.styleType === 'standard') {
+        for (let x=1; x <= this.steps.length; x++) {
+          pathMap += `a1 1 0 ${pathULSwitch[this.styleType][i]} ${pathULSwitch[this.styleType][i]} ${this.cD} 0 `
+          if (x !== this.steps.length) {
+            pathMap += `h${this.cD} `
+          }
         }
       }
-      if (i > 1) {  // foreground
+      if (this.styleType === 'snake') {
+        for (let x=1; x <= this.steps.length; x++) {
+          pathMap += `a1 1 0 ${x%2} ${x%2} ${this.cD} 0 `
+        }
+      }
+
+      if (i > foregroundIndex) {  // foreground
         this.setAttrs(p, [
           ['stroke', this.colorFg],
           ['fill', 'none'],
@@ -200,6 +221,9 @@ const stepsInit = {
   setString (val, def) {
     return val || def
   },
+  setEnumString (val, def, allowed) {
+    return allowed.indexOf(val) != -1 ? val : def
+  },
   setConfig (conf) {
     this.target = conf.target
     this.cR = this.setNumber(conf.circleRadius, 60)
@@ -217,6 +241,7 @@ const stepsInit = {
     this.activeFill = this.setString(conf.activeFill, '')
     this.completeTextFill = this.setString(conf.completeTextFill, '')
     this.activeTextFill = this.setString(conf.activeTextFill, '')
+    this.styleType = this.setEnumString(conf.styleType, 'standard', ['snake'])
     this.cD =  this.cR * 2
   },
   updateProgress (conf, fn) {

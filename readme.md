@@ -36,7 +36,7 @@ foo.updateStepsText(['✔️', '✔️', '✔️', ['boo', '50%']]).updateProgre
     currentStep: int def 0
     currentStepCompleted: number def 0
     animationSpeed: int def 500
-    steps: array def []
+    steps: array def [] // array in array for multiple text lines
     backgroundColor: string hex|colorname|rgb|rgba def '#ffffff'
     colorBg: string hex|colorname|rgb|rgba def '#cccccc'
     colorFg: string hex|colorname|rgb|rgba def 'limeGreen'
@@ -46,6 +46,7 @@ foo.updateStepsText(['✔️', '✔️', '✔️', ['boo', '50%']]).updateProgre
     completeFill: string hex|colorname|rgb|rgba def ''
     completeTextFill: string hex|colorname|rgb|rgba def ''
     activeTextFill: string hex|colorname|rgb|rgba def ''
+    styleType: string enum [standard|snake] def 'standard'
 ```
 
 ![Gif example](https://media.giphy.com/media/WtUlEdWDjMnDPaGsHp/giphy.gif)
