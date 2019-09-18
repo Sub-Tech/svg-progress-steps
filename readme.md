@@ -49,7 +49,7 @@ foo.updateStepsText(['✔️', '✔️', '✔️', ['boo', '50%']]).updateProgre
     styleType: string enum [standard|snake] def 'standard'
 ```
 
-![Gif example](https://media.giphy.com/media/WtUlEdWDjMnDPaGsHp/giphy.gif)
+![Gif example](https://media.giphy.com/media/QZmpz4c0EENvRxmWZZ/giphy.gif)
 
 Or check out the example html
 
