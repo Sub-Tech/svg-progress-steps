@@ -1,49 +1,29 @@
 const path = require('path');
-const webpack = require('webpack')
-const { CleanWebpackPlugin } = require('clean-webpack-plugin')
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 
-module.exports = env => {
+module.exports = (env, argv) => {
+  const isProd = argv.mode === 'production'
   return  {
     entry: {
       'svg-progress-steps' : './src/index.js'
     },
     output: {
       filename: `[name].min.js`,
-      path: path.resolve(__dirname, env.production ? 'dist' : 'build')
+      path: path.resolve(__dirname, isProd ? 'dist' : 'build')
     },
     module: {
       rules: [
         {
-          test: /\.js$/,
-          include: /src/,
-          exclude: /node_modules/,
+          test: /\.js$/, //Regular expression
+          exclude: /(node_modules|bower_components)/, //excluded node_modules
           use: {
-            loader: "babel-loader",
+            loader: 'babel-loader',
             options: {
-              presets: ['env']
+              presets: ['@babel/preset-env'] //Preset used for env setup
             }
           }
         }
       ]
     },
-    optimization: {
-      minimizer: [
-        new UglifyJsPlugin({
-          cache: true,
-          parallel: true,
-          uglifyOptions: {
-            compress: false,
-            ecma: 6,
-            mangle: true
-          },
-          sourceMap: !env.production
-        })
-      ]
-    },
-    plugins: [
-      new CleanWebpackPlugin()
-    ],
-    devtool: 'source-map'
+    devtool: isProd ? false : 'source-map',
   }
 };
