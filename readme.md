@@ -5,6 +5,22 @@ A zero dependency micro library for dynamically updating progress using svgs and
 #### Why
 Could not find a library that allowed partial step completeness.  Pure css versions have issues when background colour on parent is set, sending the :after line to be hidden
 
+#### Usage
+Either via package manager yarn/npm etc
+`yarn add svg-progress-steps`
+
+```angular2
+import progressSteps from 'svg-progress-steps'
+const ps = stepsProgress({ ... your config })]
+```
+
+or by global var via script call
+
+```angular2
+<script src="/your/path/to/svg-progress-steps.js"></script>
+var ps = stepsProgress({ ... your config })]
+```
+
 #### example
 ```
 const foo = stepsProgress({
