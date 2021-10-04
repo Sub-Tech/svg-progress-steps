@@ -11,7 +11,7 @@ const foo = stepsProgress({
     target: document.getElementById('target'),
     currentStep: 1,
     currentStepCompleted: 0.2,
-    steps: ['foo', 'bar', 'baz', ['boo', 'arse']]
+    steps: ['foo', 'bar', 'baz', ['boo', 'moo']]
 })
   
 // on some event
@@ -21,7 +21,7 @@ foo.updateProgress({
 })
 ```
 
-// you can also update any of the text
+##### you can also update any of the text
 ```html
 foo.updateStepsText(['✔️', '✔️', '✔️', ['boo', '50%']]).updateProgress({
   currentStep: 4,
