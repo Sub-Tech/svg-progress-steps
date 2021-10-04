@@ -14,10 +14,10 @@ import stepsProgress from 'svg-progress-steps'
 const ps = stepsProgress({ ... your config })]
 ```
 
-or by global var via script call
+or by global var via script call. *recommended to store locally, not fetch via cdn for production.  But cdn can get you up and running fast in dev*
 
 ```angular2
-<script src="/your/path/to/svg-progress-steps.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/svg-progress-steps@latest/dist/svg-progress-steps.min.js"></script>
 var ps = stepsProgress({ ... your config })]
 ```
 
