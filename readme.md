@@ -10,7 +10,7 @@ Either via package manager yarn/npm etc
 `yarn add svg-progress-steps`
 
 ```angular2
-import progressSteps from 'svg-progress-steps'
+import stepsProgress from 'svg-progress-steps'
 const ps = stepsProgress({ ... your config })]
 ```
 
