@@ -1,10 +1,15 @@
 {
   "name": "svg-progress-steps",
-  "version": "1.1.0",
-  "description": "getting the svg dong out for progress steps",
-  "main": "index.js",
+  "version": "1.1.1",
+  "description": "A zero dependency micro library for dynamically updating progress using SVG and js",
+  "main": "src/index.js",
   "author": "ross matheson",
-  "license": "none",
+  "license": "MIT",
+  "keywords": [
+    "progress steps",
+    "svg progress",
+    "dynamic progress steps"
+  ],
   "dependencies": {},
   "scripts": {
     "dev": "yarn check_node && webpack --watch --mode=development",
@@ -21,5 +26,9 @@
     "check-node-version": "^4.1.0",
     "webpack": "5.44.0",
     "webpack-cli": "4.7.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Sub-Tech/svg-progress-steps"
   }
 }
