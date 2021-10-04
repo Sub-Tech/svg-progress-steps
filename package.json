@@ -15,7 +15,16 @@
     "dev": "yarn check_node && webpack --watch --mode=development",
     "build": "yarn check_node && webpack --mode=production",
     "check_node": "check-node-version --node $(cat .nvmrc)",
-    "audit:fix": "yarn check_node && npx yarn-audit-fix"
+    "audit:fix": "yarn check_node && npx yarn-audit-fix",
+    "test": "jest"
+  },
+  "jest": {
+    "testEnvironment": "jsdom",
+    "collectCoverage": true,
+    "coverageReporters": [
+      "json",
+      "html"
+    ]
   },
   "browserslist": "> 0.25%, not dead",
   "devDependencies": {
@@ -24,6 +33,7 @@
     "@babel/preset-env": "^7.9.0",
     "babel-loader": "^8.0.6",
     "check-node-version": "^4.1.0",
+    "jest": "^27.2.4",
     "webpack": "5.44.0",
     "webpack-cli": "4.7.2"
   },

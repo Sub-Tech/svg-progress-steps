@@ -1,3 +1,5 @@
-import ProgressSteps from './ProgressSteps'
+import ProgressSteps from './progressSteps'
 
 window.stepsProgress = ProgressSteps
+
+export default ProgressSteps
