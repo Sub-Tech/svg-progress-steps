@@ -22,6 +22,12 @@ var ps = stepsProgress({ ... your config })]
 ```
 
 #### example
+html
+```angular2
+<div id="target"></div>
+```
+
+js
 ```
 const foo = stepsProgress({
     target: document.getElementById('target'),
@@ -30,7 +36,7 @@ const foo = stepsProgress({
     steps: ['foo', 'bar', 'baz', ['boo', 'moo']]
 })
   
-// on some event
+// on some event update the progress
 foo.updateProgress({
   currentStep: 2,
   currentStepCompleted: 0.7
