@@ -79,7 +79,7 @@ Or check out the example html
 Works on browsers with basic svg support eg IE9+
 Transitions only work with browsers supporting css transitions :)
 
-build support set via browserlist at `0.25%, not dead`
+build support set via browserlist at `0.25%, not dead
 
 
 
